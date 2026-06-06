@@ -11,6 +11,12 @@ def main() -> None:
     parser.add_argument("pdf", nargs="?", help="Archivo PDF de entrada.")
     parser.add_argument("output", nargs="?", help="Archivo .docx o .doc de salida.")
     parser.add_argument("--format", choices=["docx", "doc"], default="docx")
+    parser.add_argument(
+        "--mode",
+        choices=["table", "visual"],
+        default="table",
+        help="table reconstruye tablas editables; visual intenta conservar la apariencia del PDF.",
+    )
     args = parser.parse_args()
 
     if not args.pdf:
@@ -22,7 +28,7 @@ def main() -> None:
     pdf_path = Path(args.pdf)
     output_path = Path(args.output) if args.output else default_output_path(pdf_path, args.format)
     output_path = output_path.with_suffix(f".{args.format}") if not output_path.suffix else output_path
-    result = convert_pdf_to_word(pdf_path, output_path)
+    result = convert_pdf_to_word(pdf_path, output_path, mode=args.mode)
     print(result)
 
 

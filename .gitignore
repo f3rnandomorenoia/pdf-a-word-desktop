@@ -7,6 +7,8 @@ dist/
 *.docx
 *.doc
 !samples/*.docx
+samples/visual/*
+!samples/visual/comparativa-original-vs-docx-editable.png
 .pytest_cache/
 
 *.egg-info/

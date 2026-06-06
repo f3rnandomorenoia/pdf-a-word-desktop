@@ -14,12 +14,13 @@ class PdfToWordApp(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
         self.title("PDF a Word")
-        self.geometry("680x360")
-        self.minsize(620, 340)
+        self.geometry("700x420")
+        self.minsize(660, 390)
 
         self.pdf_path = tk.StringVar()
         self.output_path = tk.StringVar()
         self.output_format = tk.StringVar(value="docx")
+        self.conversion_mode = tk.StringVar(value="table")
         self.status = tk.StringVar(value="Selecciona un PDF para empezar.")
         self._result_queue: queue.Queue[tuple[str, str]] = queue.Queue()
 
@@ -72,14 +73,30 @@ class PdfToWordApp(tk.Tk):
             command=self._refresh_output_extension,
         ).pack(side="left")
 
+        ttk.Label(container, text="Modo").grid(row=5, column=0, sticky="w", pady=6)
+        mode_frame = ttk.Frame(container)
+        mode_frame.grid(row=5, column=1, columnspan=2, sticky="w", padx=8, pady=6)
+        ttk.Radiobutton(
+            mode_frame,
+            text="Tabla editable",
+            value="table",
+            variable=self.conversion_mode,
+        ).pack(side="left", padx=(0, 18))
+        ttk.Radiobutton(
+            mode_frame,
+            text="Fiel al PDF",
+            value="visual",
+            variable=self.conversion_mode,
+        ).pack(side="left")
+
         self.progress = ttk.Progressbar(container, mode="indeterminate")
-        self.progress.grid(row=5, column=0, columnspan=3, sticky="ew", pady=(20, 8))
+        self.progress.grid(row=6, column=0, columnspan=3, sticky="ew", pady=(20, 8))
 
         status_label = ttk.Label(container, textvariable=self.status)
-        status_label.grid(row=6, column=0, columnspan=3, sticky="w", pady=(0, 16))
+        status_label.grid(row=7, column=0, columnspan=3, sticky="w", pady=(0, 16))
 
         actions = ttk.Frame(container)
-        actions.grid(row=7, column=0, columnspan=3, sticky="e")
+        actions.grid(row=8, column=0, columnspan=3, sticky="e")
         ttk.Label(actions, text=f"v{__version__}").pack(side="left", padx=(0, 18))
         self.convert_button = ttk.Button(actions, text="Convertir", command=self._start_conversion)
         self.convert_button.pack(side="left")
@@ -131,12 +148,13 @@ class PdfToWordApp(tk.Tk):
 
         self._set_busy(True)
         self.status.set("Convirtiendo... Puede tardar si el PDF tiene muchas paginas.")
-        thread = threading.Thread(target=self._convert_worker, args=(pdf, output), daemon=True)
+        mode = self.conversion_mode.get()
+        thread = threading.Thread(target=self._convert_worker, args=(pdf, output, mode), daemon=True)
         thread.start()
 
-    def _convert_worker(self, pdf: str, output: str) -> None:
+    def _convert_worker(self, pdf: str, output: str, mode: str) -> None:
         try:
-            result = convert_pdf_to_word(Path(pdf), Path(output))
+            result = convert_pdf_to_word(Path(pdf), Path(output), mode=mode)
         except ConversionError as exc:
             self._result_queue.put(("error", str(exc)))
         except Exception as exc:  # Defensive UI boundary for unexpected library errors.
