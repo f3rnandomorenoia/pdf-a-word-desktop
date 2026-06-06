@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pdf-a-word-desktop"
+version = "1.0.0"
+description = "Aplicacion de escritorio para convertir PDF a Word"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "pdf2docx==0.5.8",
+  "PyMuPDF==1.26.0",
+  "python-docx==1.1.2",
+]
+
+[project.scripts]
+pdf-a-word = "pdf_to_word_app.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
