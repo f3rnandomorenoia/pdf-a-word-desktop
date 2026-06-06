@@ -6,6 +6,7 @@ dist/
 *.spec
 *.docx
 *.doc
+!samples/*.docx
 .pytest_cache/
 
 *.egg-info/

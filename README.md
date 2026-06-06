@@ -30,6 +30,20 @@ Tambien se puede convertir desde terminal:
 python -m pdf_to_word_app documento.pdf documento.docx
 ```
 
+## PDF de prueba incluido
+
+En `samples/` hay un caso simulado de contabilidad parroquial:
+
+- `ejemplo-contabilidad-parroquia.pdf`: PDF de entrada, parecido al caso real descrito.
+- `ejemplo-contabilidad-parroquia.docx`: salida generada por la aplicacion para comprobar que el texto y la tabla se pueden abrir y rectificar en Word.
+
+Para regenerarlo:
+
+```bash
+python samples/create_accounting_sample_pdf.py
+python -m pdf_to_word_app samples/ejemplo-contabilidad-parroquia.pdf samples/ejemplo-contabilidad-parroquia.docx
+```
+
 ## Nota sobre PDF a Word
 
 La conversion conserva texto, imagenes y disposicion cuando el PDF lo permite. Si el PDF es una imagen escaneada, antes haria falta OCR; esta primera version no incluye OCR.
