@@ -1,5 +1,6 @@
 from pathlib import Path
 from zipfile import ZipFile
+import re
 
 from pdf_to_word_app.converter import convert_pdf_to_editable_docx, default_output_path
 
@@ -30,3 +31,7 @@ def test_editable_table_conversion_creates_word_table(tmp_path: Path) -> None:
         document_xml = docx.read("word/document.xml").decode("utf-8")
     assert "Concepto generado por el programa" in document_xml
     assert "<w:tbl>" in document_xml
+    grid_widths = [int(value) for value in re.findall(r'<w:gridCol w:w="(\d+)"/>', document_xml)]
+    tc_widths = [int(value) for value in re.findall(r'<w:tcW w:type="dxa" w:w="(\d+)"/>', document_xml)]
+    assert 1260 not in tc_widths
+    assert any(width in tc_widths for width in grid_widths)

@@ -15,7 +15,7 @@ def main() -> None:
         "--mode",
         choices=["table", "visual"],
         default="table",
-        help="table reconstruye tablas editables; visual intenta conservar la apariencia del PDF.",
+        help="table reconstruye tablas editables manteniendo mejor el formato; visual intenta clonar la apariencia del PDF.",
     )
     args = parser.parse_args()
 

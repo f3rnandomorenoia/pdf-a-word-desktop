@@ -37,7 +37,7 @@ class PdfToWordApp(tk.Tk):
 
         subtitle = ttk.Label(
             container,
-            text="Convierte un archivo PDF a DOCX. La salida DOC requiere LibreOffice instalado.",
+            text="Convierte un PDF a Word. El modo principal intenta respetar mejor el formato y seguir siendo editable.",
         )
         subtitle.grid(row=1, column=0, columnspan=3, sticky="w", pady=(0, 18))
 
@@ -78,13 +78,13 @@ class PdfToWordApp(tk.Tk):
         mode_frame.grid(row=5, column=1, columnspan=2, sticky="w", padx=8, pady=6)
         ttk.Radiobutton(
             mode_frame,
-            text="Tabla editable",
+            text="Editable y fiel",
             value="table",
             variable=self.conversion_mode,
         ).pack(side="left", padx=(0, 18))
         ttk.Radiobutton(
             mode_frame,
-            text="Fiel al PDF",
+            text="Fiel al PDF (experimental)",
             value="visual",
             variable=self.conversion_mode,
         ).pack(side="left")

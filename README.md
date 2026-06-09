@@ -7,14 +7,17 @@ Aplicacion sencilla de escritorio para Windows, Linux y macOS que permite selecc
 - Interfaz grafica con Tkinter.
 - Seleccion de archivo PDF desde el ordenador.
 - Salida DOCX en dos modos:
-  - **Tabla editable**: recomendado para contabilidades y listados; reconstruye tablas nativas de Word para rectificar conceptos con mas comodidad.
-  - **Fiel al PDF**: intenta conservar mas la apariencia original, aunque en tablas complejas puede ajustar columnas de forma irregular.
+  - **Editable y fiel**: recomendado para contabilidades, diarios y listados con tablas; reconstruye tablas nativas de Word intentando respetar anchos, alturas, celdas combinadas y estilos basicos.
+  - **Fiel al PDF (experimental)**: intenta conservar mas la apariencia original, aunque puede tardar mas y en tablas complejas ajustar columnas de forma irregular.
 - Salida DOC opcional usando LibreOffice en modo headless, si esta instalado.
-- Ejecutable Windows generado automaticamente con GitHub Actions.
+- Build automatizada para Windows y macOS con GitHub Actions.
 
-## Descargar el ejecutable de Windows
+## Descargar las builds
 
-Abre la seccion **Releases** del repositorio y descarga `PdfAWord.exe`.
+Abre la seccion **Releases** del repositorio y descarga:
+
+- `PdfAWord.exe` para Windows
+- `PdfAWord-macOS.zip` para macOS
 
 ## Uso desde codigo fuente
 
@@ -51,5 +54,7 @@ python -m pdf_to_word_app samples/ejemplo-contabilidad-parroquia.pdf samples/eje
 ## Nota sobre PDF a Word
 
 La conversion conserva texto, imagenes y disposicion cuando el PDF lo permite. Si el PDF es una imagen escaneada, antes haria falta OCR; esta primera version no incluye OCR.
+
+Para PDFs claramente tabulares, el modo principal no pasa por HTML intermedio: reconstruye directamente la estructura del PDF en DOCX para mantener mejor la editabilidad.
 
 Para generar `.doc`, instala LibreOffice. Sin LibreOffice, usa `.docx`, que es el formato moderno de Office.
