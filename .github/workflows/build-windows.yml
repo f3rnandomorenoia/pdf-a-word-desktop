@@ -1,4 +1,4 @@
-name: Build Windows executable
+name: Build Windows installer
 
 on:
   push:
@@ -12,6 +12,8 @@ permissions:
 jobs:
   build-windows:
     runs-on: windows-latest
+    env:
+      PYTHON_VERSION: "3.12"
 
     steps:
       - name: Checkout
@@ -20,7 +22,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install dependencies
         run: |
@@ -31,17 +33,33 @@ jobs:
       - name: Run tests
         run: pytest
 
+      - name: Read app version
+        shell: bash
+        run: |
+          APP_VERSION=$(python - <<'PY'
+          from pdf_to_word_app import __version__
+          print(__version__)
+          PY
+          )
+          echo "APP_VERSION=$APP_VERSION" >> "$GITHUB_ENV"
+
       - name: Build executable
         run: pyinstaller --noconsole --onefile --name PdfAWord --collect-all pdf2docx --collect-all fitz run.py
+
+      - name: Install Inno Setup
+        run: choco install innosetup --no-progress -y
+
+      - name: Build installer
+        run: iscc /DMyAppVersion=%APP_VERSION% installer\windows\PdfAWord.iss
 
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
-          name: PdfAWord-Windows
-          path: dist/PdfAWord.exe
+          name: PdfAWord-Windows-Installer
+          path: dist/installer/PdfAWord-Setup-*.exe
 
       - name: Publish GitHub release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/PdfAWord.exe
+          files: dist/installer/PdfAWord-Setup-*.exe

@@ -16,8 +16,10 @@ Aplicacion sencilla de escritorio para Windows, Linux y macOS que permite selecc
 
 Abre la seccion **Releases** del repositorio y descarga:
 
-- `PdfAWord.exe` para Windows
+- `PdfAWord-Setup-...exe` para Windows
 - `PdfAWord-macOS.zip` para macOS
+
+En Windows, la entrega recomendada es el instalador: ya incluye la aplicacion y todas las librerias necesarias para poder ejecutarla en Windows 10 sin instalar dependencias aparte.
 
 ## Uso desde codigo fuente
 
