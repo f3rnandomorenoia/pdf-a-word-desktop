@@ -31,9 +31,24 @@ jobs:
       - name: Run tests
         run: pytest
 
+      - name: Build macOS icon
+        run: |
+          mkdir -p build/PdfAWord.iconset
+          sips -z 16 16 assets/pdfaword-icon.png --out build/PdfAWord.iconset/icon_16x16.png
+          sips -z 32 32 assets/pdfaword-icon.png --out build/PdfAWord.iconset/icon_16x16@2x.png
+          sips -z 32 32 assets/pdfaword-icon.png --out build/PdfAWord.iconset/icon_32x32.png
+          sips -z 64 64 assets/pdfaword-icon.png --out build/PdfAWord.iconset/icon_32x32@2x.png
+          sips -z 128 128 assets/pdfaword-icon.png --out build/PdfAWord.iconset/icon_128x128.png
+          sips -z 256 256 assets/pdfaword-icon.png --out build/PdfAWord.iconset/icon_128x128@2x.png
+          sips -z 256 256 assets/pdfaword-icon.png --out build/PdfAWord.iconset/icon_256x256.png
+          sips -z 512 512 assets/pdfaword-icon.png --out build/PdfAWord.iconset/icon_256x256@2x.png
+          sips -z 512 512 assets/pdfaword-icon.png --out build/PdfAWord.iconset/icon_512x512.png
+          sips -z 1024 1024 assets/pdfaword-icon.png --out build/PdfAWord.iconset/icon_512x512@2x.png
+          iconutil -c icns build/PdfAWord.iconset -o assets/pdfaword-icon.icns
+
       - name: Build app bundle
         run: |
-          pyinstaller --windowed --name PdfAWord --collect-all pdf2docx --collect-all fitz run.py
+          pyinstaller --windowed --name PdfAWord --icon assets/pdfaword-icon.icns --collect-all pdf2docx --collect-all fitz run.py
 
       - name: Create zip artifact
         run: |

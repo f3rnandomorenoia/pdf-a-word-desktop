@@ -23,6 +23,7 @@ WizardStyle=modern
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 UninstallDisplayIcon={app}\{#MyAppExeName}
+SetupIconFile=..\..\assets\pdfaword-icon.ico
 
 [Languages]
 Name: "spanish"; MessagesFile: "compiler:Languages\\Spanish.isl"
