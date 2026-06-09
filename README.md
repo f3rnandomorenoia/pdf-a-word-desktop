@@ -9,7 +9,6 @@ Aplicacion sencilla de escritorio para Windows, Linux y macOS que permite selecc
 - Salida DOCX en dos modos:
   - **Editable y fiel**: recomendado para contabilidades, diarios y listados con tablas; reconstruye tablas nativas de Word intentando respetar anchos, alturas, celdas combinadas y estilos basicos.
   - **Fiel al PDF (experimental)**: intenta conservar mas la apariencia original, aunque puede tardar mas y en tablas complejas ajustar columnas de forma irregular.
-- Salida DOC opcional usando LibreOffice en modo headless, si esta instalado.
 - Build automatizada para Windows y macOS con GitHub Actions.
 
 ## Descargar las builds
@@ -58,5 +57,3 @@ python -m pdf_to_word_app samples/ejemplo-contabilidad-parroquia.pdf samples/eje
 La conversion conserva texto, imagenes y disposicion cuando el PDF lo permite. Si el PDF es una imagen escaneada, antes haria falta OCR; esta primera version no incluye OCR.
 
 Para PDFs claramente tabulares, el modo principal no pasa por HTML intermedio: reconstruye directamente la estructura del PDF en DOCX para mantener mejor la editabilidad.
-
-Para generar `.doc`, instala LibreOffice. Sin LibreOffice, usa `.docx`, que es el formato moderno de Office.

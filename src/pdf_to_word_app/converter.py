@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-import shutil
-import subprocess
-import tempfile
 from pathlib import Path
 
 import fitz
@@ -59,58 +56,7 @@ def convert_pdf_to_word(pdf_path: Path, output_path: Path, mode: str = "table") 
         if mode == "table":
             return convert_pdf_to_editable_docx(Path(pdf_path), output_path)
         return convert_pdf_to_docx(Path(pdf_path), output_path)
-    if extension == ".doc":
-        return convert_pdf_to_doc(Path(pdf_path), output_path, mode=mode)
-    raise ConversionError("El destino debe terminar en .docx o .doc.")
-
-
-def convert_pdf_to_doc(pdf_path: Path, output_path: Path, mode: str = "table") -> Path:
-    """Create a legacy .doc file by using LibreOffice after DOCX conversion."""
-    soffice = shutil.which("soffice") or shutil.which("libreoffice")
-    if not soffice:
-        raise ConversionError(
-            "Para generar .doc hace falta LibreOffice instalado. "
-            "Prueba con DOCX o instala LibreOffice."
-        )
-
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    with tempfile.TemporaryDirectory(prefix="pdf-a-word-") as temp_dir:
-        temp_docx = Path(temp_dir) / f"{Path(output_path).stem}.docx"
-        if mode == "table":
-            convert_pdf_to_editable_docx(pdf_path, temp_docx)
-        else:
-            convert_pdf_to_docx(pdf_path, temp_docx)
-        command = [
-            soffice,
-            "--headless",
-            "--convert-to",
-            "doc",
-            "--outdir",
-            str(output_path.parent),
-            str(temp_docx),
-        ]
-        result = subprocess.run(
-            command,
-            check=False,
-            capture_output=True,
-            text=True,
-            timeout=120,
-        )
-        generated = output_path.parent / f"{temp_docx.stem}.doc"
-        if result.returncode != 0 or not generated.exists():
-            detail = (result.stderr or result.stdout or "").strip()
-            raise ConversionError(
-                "LibreOffice no pudo generar el archivo .doc."
-                + (f" Detalle: {detail}" if detail else "")
-            )
-        if generated != output_path:
-            if output_path.exists():
-                output_path.unlink()
-            generated.rename(output_path)
-
-    if not output_path.exists() or output_path.stat().st_size == 0:
-        raise ConversionError("La conversion no genero un archivo DOC valido.")
-    return output_path
+    raise ConversionError("El destino debe terminar en .docx.")
 
 
 def convert_pdf_to_editable_docx(pdf_path: Path, output_path: Path) -> Path:

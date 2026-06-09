@@ -19,7 +19,6 @@ class PdfToWordApp(tk.Tk):
 
         self.pdf_path = tk.StringVar()
         self.output_path = tk.StringVar()
-        self.output_format = tk.StringVar(value="docx")
         self.conversion_mode = tk.StringVar(value="table")
         self.status = tk.StringVar(value="Selecciona un PDF para empezar.")
         self._result_queue: queue.Queue[tuple[str, str]] = queue.Queue()
@@ -55,23 +54,10 @@ class PdfToWordApp(tk.Tk):
             row=3, column=2, sticky="e", pady=6
         )
 
-        ttk.Label(container, text="Formato").grid(row=4, column=0, sticky="w", pady=6)
-        format_frame = ttk.Frame(container)
-        format_frame.grid(row=4, column=1, sticky="w", padx=8, pady=6)
-        ttk.Radiobutton(
-            format_frame,
-            text="DOCX",
-            value="docx",
-            variable=self.output_format,
-            command=self._refresh_output_extension,
-        ).pack(side="left", padx=(0, 18))
-        ttk.Radiobutton(
-            format_frame,
-            text="DOC",
-            value="doc",
-            variable=self.output_format,
-            command=self._refresh_output_extension,
-        ).pack(side="left")
+        ttk.Label(container, text="Salida").grid(row=4, column=0, sticky="w", pady=6)
+        ttk.Label(container, text="Siempre se genera un archivo DOCX.").grid(
+            row=4, column=1, columnspan=2, sticky="w", padx=8, pady=6
+        )
 
         ttk.Label(container, text="Modo").grid(row=5, column=0, sticky="w", pady=6)
         mode_frame = ttk.Frame(container)
@@ -110,31 +96,28 @@ class PdfToWordApp(tk.Tk):
             return
         pdf_path = Path(selected)
         self.pdf_path.set(str(pdf_path))
-        self.output_path.set(str(default_output_path(pdf_path, self.output_format.get())))
+        self.output_path.set(str(default_output_path(pdf_path, "docx")))
         self.status.set("PDF seleccionado. Puedes convertirlo cuando quieras.")
 
     def _choose_output(self) -> None:
-        extension = self.output_format.get()
         selected = filedialog.asksaveasfilename(
             title="Guardar archivo Word",
-            defaultextension=f".{extension}",
+            defaultextension=".docx",
             filetypes=[
                 ("Word DOCX", "*.docx"),
-                ("Word 97-2003 DOC", "*.doc"),
                 ("Todos los archivos", "*.*"),
             ],
         )
         if selected:
-            self.output_path.set(str(Path(selected).with_suffix(f".{extension}")))
+            self.output_path.set(str(Path(selected).with_suffix(".docx")))
 
     def _refresh_output_extension(self) -> None:
         current = self.output_path.get().strip()
         pdf = self.pdf_path.get().strip()
-        extension = self.output_format.get()
         if current:
-            self.output_path.set(str(Path(current).with_suffix(f".{extension}")))
+            self.output_path.set(str(Path(current).with_suffix(".docx")))
         elif pdf:
-            self.output_path.set(str(default_output_path(Path(pdf), extension)))
+            self.output_path.set(str(default_output_path(Path(pdf), "docx")))
 
     def _start_conversion(self) -> None:
         pdf = self.pdf_path.get().strip()
@@ -143,7 +126,7 @@ class PdfToWordApp(tk.Tk):
             messagebox.showwarning("Falta el PDF", "Selecciona primero un archivo PDF.")
             return
         if not output:
-            output = str(default_output_path(Path(pdf), self.output_format.get()))
+            output = str(default_output_path(Path(pdf), "docx"))
             self.output_path.set(output)
 
         self._set_busy(True)
