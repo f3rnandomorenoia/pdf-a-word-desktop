@@ -36,7 +36,7 @@ class PdfToWordApp(tk.Tk):
 
         subtitle = ttk.Label(
             container,
-            text="Convierte un PDF a Word. El modo principal intenta respetar mejor el formato y seguir siendo editable.",
+            text="Convierte un PDF a DOCX. El modo principal intenta respetar mejor el formato y seguir siendo editable.",
         )
         subtitle.grid(row=1, column=0, columnspan=3, sticky="w", pady=(0, 18))
 
@@ -54,10 +54,8 @@ class PdfToWordApp(tk.Tk):
             row=3, column=2, sticky="e", pady=6
         )
 
-        ttk.Label(container, text="Salida").grid(row=4, column=0, sticky="w", pady=6)
-        ttk.Label(container, text="Siempre se genera un archivo DOCX.").grid(
-            row=4, column=1, columnspan=2, sticky="w", padx=8, pady=6
-        )
+        ttk.Label(container, text="Formato").grid(row=4, column=0, sticky="w", pady=6)
+        ttk.Label(container, text="DOCX").grid(row=4, column=1, sticky="w", padx=8, pady=6)
 
         ttk.Label(container, text="Modo").grid(row=5, column=0, sticky="w", pady=6)
         mode_frame = ttk.Frame(container)
@@ -96,7 +94,7 @@ class PdfToWordApp(tk.Tk):
             return
         pdf_path = Path(selected)
         self.pdf_path.set(str(pdf_path))
-        self.output_path.set(str(default_output_path(pdf_path, "docx")))
+        self.output_path.set(str(default_output_path(pdf_path)))
         self.status.set("PDF seleccionado. Puedes convertirlo cuando quieras.")
 
     def _choose_output(self) -> None:
@@ -111,14 +109,6 @@ class PdfToWordApp(tk.Tk):
         if selected:
             self.output_path.set(str(Path(selected).with_suffix(".docx")))
 
-    def _refresh_output_extension(self) -> None:
-        current = self.output_path.get().strip()
-        pdf = self.pdf_path.get().strip()
-        if current:
-            self.output_path.set(str(Path(current).with_suffix(".docx")))
-        elif pdf:
-            self.output_path.set(str(default_output_path(Path(pdf), "docx")))
-
     def _start_conversion(self) -> None:
         pdf = self.pdf_path.get().strip()
         output = self.output_path.get().strip()
@@ -126,7 +116,7 @@ class PdfToWordApp(tk.Tk):
             messagebox.showwarning("Falta el PDF", "Selecciona primero un archivo PDF.")
             return
         if not output:
-            output = str(default_output_path(Path(pdf), "docx"))
+            output = str(default_output_path(Path(pdf)))
             self.output_path.set(output)
 
         self._set_busy(True)

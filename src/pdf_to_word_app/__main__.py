@@ -25,8 +25,8 @@ def main() -> None:
         return
 
     pdf_path = Path(args.pdf)
-    output_path = Path(args.output) if args.output else default_output_path(pdf_path, "docx")
-    output_path = output_path.with_suffix(".docx") if output_path.suffix.lower() != ".docx" else output_path
+    output_path = Path(args.output) if args.output else default_output_path(pdf_path)
+    output_path = output_path.with_suffix(".docx") if not output_path.suffix else output_path
     result = convert_pdf_to_word(pdf_path, output_path, mode=args.mode)
     print(result)
 

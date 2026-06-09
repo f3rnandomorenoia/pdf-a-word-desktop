@@ -12,3 +12,6 @@ samples/visual/*
 .pytest_cache/
 
 *.egg-info/
+.DS_Store
+private example/
+~$*

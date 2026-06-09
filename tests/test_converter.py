@@ -33,6 +33,9 @@ def test_editable_table_conversion_creates_word_table(tmp_path: Path) -> None:
         document_xml = docx.read("word/document.xml").decode("utf-8")
     assert "Concepto generado por el programa" in document_xml
     assert "<w:tbl>" in document_xml
+    # Formatting is extracted from the PDF: cell shading and explicit borders.
+    assert "<w:shd" in document_xml
+    assert "<w:tblBorders>" in document_xml
     grid_widths = [int(value) for value in re.findall(r'<w:gridCol w:w="(\d+)"/>', document_xml)]
     tc_widths = [int(value) for value in re.findall(r'<w:tcW w:type="dxa" w:w="(\d+)"/>', document_xml)]
     assert 1260 not in tc_widths
